@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<style>
+    .organic-breadcrumb {
+        background: url(../img/banner/nen25.jpg) center no-repeat;
+        background-size: cover;
+        padding-top: 130px;
+    }
+</style>
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end" style="padding-top:40px;padding-bottom:40px;">
+            <div class="col-first" style="padding-right: 80px;">
+                <h1>Theo dõi đơn hàng</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="~/Home/Index">Trang chủ<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="~/Bill/Index">Tìm đơn hàng</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+<!--================Tracking Box Area =================-->
+<section class="tracking_box_area section_gap">
+    <div class="container">
+        <div class="tracking_box_inner">
+            <p>
+                Để tìm kiếm đơn hàng mà bạn đã đặt hãy điền mã đơn hàng mà chúng tôi cung cấp cho bạn lúc mua hàng vào ô <span style="color:orange">"mã đơn hàng"</span> sau đó bấm nút <span style="color:orange">"Tìm đơn để tìm kiếm"</span> để tìm.
+                Nếu bạn muốn theo dõi toàn bộ đơn hàng của mình hãy <span><a onclick="statebefore()" href="~/Login">Đăng nhập hệ thống</a></span>. Xin chân thành cảm ơn !
+            </p>
+            <script>
+                function statebefore() {
+                    var currentURL = "/Checkout/ViewBill";
+                    $.ajax({
+                        url: "/Login/SetURL",
+                        type: "GET",
+                        data: {
+                            url: currentURL
+                        }
+                    });
+                }
+            </script>
+            <form class="row tracking_form" action="/Bill/BillDetails" method="post" novalidate="novalidate">
+                <div class="col-md-12 form-group">
+                    <input type="text" class="form-control" id="billID" name="billID" placeholder="Mã đơn hàng" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Mã đơn hàng'">
+                </div>
+                @if (ViewBag.Thongbaotontai is not null)
+                {
+                    <p style="padding-left:15px;color:red;">@ViewBag.Thongbaotontai</p>
+                }
+                <div class="col-md-12 form-group">
+                    <button type="submit" value="submit" class="primary-btn">Tìm đơn</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

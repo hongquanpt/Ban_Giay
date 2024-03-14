@@ -1,0 +1,253 @@
+﻿@using System.Globalization;
+@model QuanLyBanGiay_ADMIN.Models_User.Cart;
+@{
+    ViewData["Title"] = "Cart";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+    CultureInfo culture = new CultureInfo("en-US");
+    culture.NumberFormat.NumberGroupSeparator = ".";
+}
+
+<style>
+    .organic-breadcrumb {
+        background: url(../img/banner/nen25.jpg) center no-repeat;
+        background-size: cover;
+        padding-top: 130px;
+    }
+</style>
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb" style="height: 330px;">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end" style="padding-top:60px;">
+            <div class="col-first">
+                <h1>Mua sắm</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="~/Home">Trang chủ<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Giỏ hàng</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+<!--================Cart Area =================-->
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" style="text-align:center; border:2px;">
+                    <thead>
+                        <tr class="thead-dark">
+                            <th scope="col" style="color:white">Sản phẩm</th>
+                            <th scope="col" style="color:white">Cỡ giày</th>
+                            <th scope="col" style="color:white">Giá gốc</th>
+                            <th scope="col" style="color:white">Giá hiện tại</th>
+                            <th scope="col" style="color:white">Số lượng</th>
+                            <th scope="col" style="color:white">Thành tiền</th>
+                            <th scope="col" style="color:white">Xóa khỏi giỏ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model?.Lines)
+                        {
+                            string spid = item.Product.Masanpham + item.Product.size.ToString() + "sp";
+                            string priceid = item.Product.Masanpham + item.Product.size.ToString() + item.Product.Giagoc.ToString();
+                            string numid = item.Product.Masanpham + item.Product.size.ToString() + item.Quantity.ToString();
+                            string sizeid = item.Product.Masanpham + item.Product.size.ToString() + item.Product.size.ToString();
+                            string totalid = item.Product.Masanpham + item.Product.size.ToString();
+                            <tr>
+                                <td style="padding-top:5px;padding-bottom:5px;">
+                                    <a href="~/Shop/ShopProductDetail/@item.Product.Masanpham">
+                                        <div class="media">
+                                            <div class="d-flex">
+                                                <img src="/user/img/product/@item.Product.Anhsp" alt="" style="width:101px">
+                                            </div>
+                                            <div class="media-body" style="color:black">
+                                                <p>@item.Product.TenSanpham</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>
+                                    <h5>@item.Product.size</h5>
+                                </td>
+                                @{
+                                    string giabandau = item.Product.Giagoc.ToString("N0", culture);
+                                    decimal giasau = ((decimal)1 - (decimal)item.Product.Tilegiamgia / 100) * (decimal)item.Product.Giagoc;
+                                    string giahientai = giasau.ToString("N0", culture);
+                                    decimal giatong = (((decimal)1 - (decimal)item.Product.Tilegiamgia / 100) * (decimal)item.Product.Giagoc) * (decimal)item.Quantity;
+                                    string tonggiaban = giatong.ToString("N0", culture);
+                                }
+                                <td>
+                                    <h5>@giabandau VND</h5>
+                                </td>
+                                <td>
+                                    <h5 id="@priceid">@giahientai VND</h5>
+                                </td>
+                                <td>
+                                    <div class="product_count">
+                                        <input type="hidden" value="@item.Product.Masanpham" id="@spid" />
+                                        <input type="hidden" value="@item.Product.size" id="@sizeid" />
+                                        <input onchange="updateCartAjax('@spid','@sizeid','@numid')" onkeyup="checkSoluong('@numid');onkeyupInput('@numid','@priceid','@totalid')" type="number" name="qty" id="@numid" step="1" min="1" max="@item.Product.soluong" value="@item.Quantity" title="Quantity:" class="input-text qty" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                        <button onclick="checkSoluongTang('@numid','@priceid','@totalid');incrementQuantity('@numid','@priceid','@totalid');updateCartAjax('@spid','@sizeid','@numid')" class="increase items-count" type="button">
+                                            <i class="lnr lnr-chevron-up"></i>
+                                        </button>
+                                        <button onclick="decrementQuantity('@numid','@priceid','@totalid');updateCartAjax('@spid','@sizeid','@numid')" class="reduced items-count" type="button">
+                                            <i class="lnr lnr-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <h5 id="@totalid">@tonggiaban VND</h5>
+                                </td>
+                                <td>
+                                    <a href="~/Cart/RemoveFromCart/?productID=@item.Product.Masanpham&size=@item.Product.size" class='fas fa-trash-alt' style='color:red'>Remove</a>
+                                </td>
+                            </tr>
+                        }
+                        <!---------------------------------------------------------------------------------------------------------------------------------->
+                        <tr class="out_button_area">
+                            <td colspan="7">
+                                <div class="checkout_btn_inner d-flex align-items-center" style="width: 700px;margin-left:250px;">
+                                    <a class="gray_btn" href="~/Shop/Index">Tiếp tục mua hàng</a>
+                                    @if (ViewBag.user is not null)
+                                    {
+                                        <a style="width:200px;" class="primary-btn" onclick="checkCheckout(@Model.Lines.Count())">Mua hàng</a>
+                                    }
+                                    else
+                                    {
+                                        <a class="primary-btn" href="~/Login" onclick="statebefore()">Mua theo tài khoản</a>
+                                        <a class="primary-btn" onclick="checkCheckout(@Model.Lines.Count())">Mua hàng tự do</a>
+                                        <script>
+                                            function statebefore() {
+                                                var currentURL = "/Checkout";
+                                                $.ajax({
+                                                    url: "/Login/SetURL",
+                                                    type: "GET",
+                                                    data: {
+                                                        url: currentURL
+                                                    }
+                                                });
+                                            }
+                                        </script>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Cart Area =================-->
+<script>
+
+    function incrementQuantity(sst, ne, to) {
+        //Số lượng sản phẩm
+        var stt = document.getElementById(sst);
+        var sstvalue = stt.value;
+        //Giá một sản phẩm
+        var price = document.getElementById(ne);
+        var pricevalue = price.textContent;
+        //Giả của cả giỏ hàng
+        var sum = document.getElementById(to);
+        var sumvalue = sum.textContent;
+        if (!isNaN(sstvalue)) {
+            document.getElementById(sst).value = parseInt(sstvalue) + 1;
+            var tienhientai = parseInt(sumvalue.replace(/\./g, '')) + parseInt(pricevalue.replace(/\./g, ''));
+            document.getElementById(to).textContent = tienhientai.toLocaleString('vi-VN') + 'VND';
+        }
+    }
+
+    function decrementQuantity(sst, ne, to) {
+        var stt = document.getElementById(sst);
+        var sstvalue = stt.value;
+        var price = document.getElementById(ne);
+        var pricevalue = price.textContent;
+        var sum = document.getElementById(to);
+        var sumvalue = sum.textContent;
+        if (!isNaN(sstvalue) && sstvalue > 0) {
+            document.getElementById(sst).value = parseInt(sstvalue) - 1;
+            var tienhientai = parseInt(sumvalue.replace(/\./g, '')) - parseInt(pricevalue.replace(/\./g, ''));
+            document.getElementById(to).textContent = tienhientai.toLocaleString('vi-VN') + 'VND';
+        }
+    }
+
+    function onkeyupInput(sst, ne, to) {
+        var stt = document.getElementById(sst);
+        var sstvalue = stt.value;
+        var price = document.getElementById(ne);
+        var pricevalue = price.textContent;
+        if (!isNaN(parseInt(sstvalue))) {
+            var tienhientai = parseInt(sstvalue) * parseInt(pricevalue.replace(/\./g, ''));
+            document.getElementById(to).textContent = tienhientai.toLocaleString('vi-VN') + 'VND';
+        }
+        else {
+            document.getElementById(to).textContent = 0;
+        }
+    }
+    //Kiểm tra số lượng sản phẩm nhập vào giỏ hàng
+    function checkSoluong(id) {
+        var sl_chon = parseInt(document.getElementById(id).value, 10);
+        var sl_max = parseInt(document.getElementById(id).max, 10);
+        if (sl_chon > sl_max) {
+            alert("Số lượng đặt hàng đã vượt quá số lượng còn lại !");
+            document.getElementById(id).value = "1";
+        }
+        if (document.getElementById(id).value == "") {
+            document.getElementById(id).value = "1"
+        }
+    }
+
+    function checkSoluongTang(sst, ne, to) {
+        var sl_chon = parseInt(document.getElementById(sst).value, 10);
+        var sl_max = parseInt(document.getElementById(sst).max, 10);
+        var price = document.getElementById(ne);
+        var pricevalue = price.textContent;
+        var sum = document.getElementById(to);
+        var sumvalue = sum.textContent;
+        if (sl_chon >= sl_max) {
+            document.getElementById(sst).value = document.getElementById(sst).max - 1;
+            var tienhientai = parseInt(sumvalue.replace(/\./g, '')) - parseInt(pricevalue.replace(/\./g, ''));
+            document.getElementById(to).textContent = tienhientai.toLocaleString('vi-VN') + 'VND';
+        }
+    }
+    // Ajax update cart
+    function updateCartAjax(masp, siz, quan) {
+        var ma = document.getElementById(masp);
+        var productID = ma.value;
+        var si = document.getElementById(siz);
+        var size = si.value;
+        var sl = document.getElementById(quan);
+        var quantity = sl.value;
+        if (quantity == 0) {
+            window.location = "RemoveFromCart?productID=" + productID + "&size=" + size;
+        }
+        $.ajax({
+            url: '/Cart/UpdateCart',
+            type: 'POST',
+            data: { productID: productID, quantity: quantity, size: size },
+            success: function (data) {
+                document.getElementById("Cart_CurentNumber").innerHTML = '(' + data.totalItems + ')';
+                var link = '/Cart/UpdateCart?productID=' + productID + '&quantity=' + quantity + '&size=' + size;
+                history.pushState(null, null, link);
+            },
+            error: function () {
+                console.log("Failed to add new item");
+            }
+        });
+    }
+
+    function checkCheckout(countCart) {
+        if (parseInt(countCart) == 0) {
+            alert("Bạn chưa có sản phẩm trong giỏ hàng! Đi mua ngay !");
+            window.location = "/Shop/Index";
+        }
+        else {
+            window.location = "/Checkout";
+        }
+    }
+</script>

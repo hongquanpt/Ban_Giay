@@ -1,0 +1,85 @@
+﻿@{
+	ViewData["Title"] = "Index";
+}
+<style>
+	.organic-breadcrumb {
+		background: url(../img/banner/nen7.jpg) center no-repeat;
+		background-size: cover;
+		padding-top: 130px;
+	}
+</style>
+<!--================Login Box Area =================-->
+<section class="login_box_area section_gap organic-breadcrumb" style="padding-top:160px;">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="login_box_img">
+					<img class="img-fluid" src="~/img/banner/nen2.jpg">
+					<div class="hover">
+						<h3><b>WELLCOME TO BLOSSOMFEET SHOP</b></h3>
+						<p> THỜI TRANG CHO PHÁI NỮ ! </p>
+						<a class="primary-btn" href="~/Login/SignUp">TẠO TÀI KHOẢN</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="login_form_inner" style="padding-top:100px;height: 456px;">
+					<h3>Đăng nhập</h3>
+					<form class="row login_form" action="~/Login/Index" method="get" id="contactForm" novalidate="novalidate">
+						@if (@ViewBag.Thongbaotk is not null)
+						{
+							<div class="col-md-12 form-group" style="margin-bottom: 0px;">
+								<input type="text" class="form-control" id="name" name="Username" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+							</div>
+							<p style="padding-left:15px;color: #edff33">@ViewBag.Thongbaotk<a class="text-decoration-underline" href="~/Login/SignUp"> Đăng ký tài khoản!</a></p>
+							<div class="col-md-12 form-group">
+								<input type="password" class="form-control" id="name" name="Password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+							</div>
+							<div class="col-md-12 form-group" style="margin-bottom: 0px;margin-top: 0px;">
+								<div class="creat_account">
+									<input type="checkbox" id="f-option2" name="selector">
+									<label for="f-option2" style="color:white">Keep me logged in</label>
+								</div>
+							</div>
+						}
+						else if (@ViewBag.Thongbaomk is not null)
+						{
+							<div class="col-md-12 form-group">
+								<input type="text" class="form-control" id="name" name="Username" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+							</div>
+							<div class="col-md-12 form-group" style="margin-bottom: 0px;">
+								<input type="password" class="form-control" id="name" name="Password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+							</div>
+							<p style="padding-left:15px;color: #edff33">@ViewBag.Thongbaomk</p>
+							<div class="col-md-12 form-group" style="margin-bottom: 0px;margin-top: 0px;">
+								<div class="creat_account">
+									<input type="checkbox" id="f-option2" name="selector">
+									<label for="f-option2" style="color:white">Nhớ tài khoản</label>
+								</div>
+							</div>
+						}
+						else
+						{
+							<div class="col-md-12 form-group">
+								<input type="text" class="form-control" id="name" name="Username" placeholder="Username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Username'">
+							</div>
+							<div class="col-md-12 form-group">
+								<input type="password" class="form-control" id="name" name="Password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+							</div>
+							<div class="col-md-12 form-group">
+								<div class="creat_account">
+									<input type="checkbox" id="f-option2" name="selector">
+									<label for="f-option2" style="color:white">Keep me logged in</label>
+								</div>
+							</div>
+						}
+						<div class="col-md-12 form-group">
+							<button type="submit" value="submit" class="primary-btn">ĐĂNG NHẬP</button>
+							<a href="~/Home/Index"><u style="color:white">Tiếp tục không đăng nhập</u></a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
